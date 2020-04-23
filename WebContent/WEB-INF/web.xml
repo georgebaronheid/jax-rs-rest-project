@@ -12,7 +12,7 @@
         <!-- Parameter to point out were the Jax-Rs configs are located -->
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>java.br.com.baronheid.config.jersey.ServiceConfig</param-value>
+            <param-value>main.java.br.com.baronheid.config.jersey.ServiceConfig</param-value>
         </init-param>
     </servlet>
     <!-- Jersey will supply processing to any request to /UserCrudRest/ -->
