@@ -10,8 +10,8 @@ public class testMain {
         EntityManager entityManager  = null;
 
         User user = new User();
-        user.setEmail("any_email@provider.net");
-        user.setName("Average Joe");
+        user.setEmail("any_email231@provider.net");
+        user.setName("Average Joe21");
 
         try {
             entityManager = EntityManagerSingletonFactory.getInstance().createEntityManager();

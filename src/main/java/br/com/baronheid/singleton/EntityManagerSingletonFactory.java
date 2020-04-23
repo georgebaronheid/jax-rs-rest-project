@@ -7,7 +7,7 @@ public class EntityManagerSingletonFactory {
 
     private static EntityManagerFactory entityManagerFactory;
 
-    // We do not intend to allow this object to be created
+    // We do not intend to allow this object to be created directly
     private EntityManagerSingletonFactory(){}
 
     // This static method generates an entity manager to supply persistence to the application
