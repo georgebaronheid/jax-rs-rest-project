@@ -1,7 +1,7 @@
 package test.java;
 
-import main.java.br.com.baronheid.entity.User;
-import main.java.br.com.baronheid.singleton.EntityManagerSingletonFactory;
+import main.java.br.com.baronheid.model.entity.User;
+import main.java.br.com.baronheid.config.singleton.EntityManagerSingletonFactory;
 
 import javax.persistence.EntityManager;
 

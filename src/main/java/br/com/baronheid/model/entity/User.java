@@ -1,4 +1,4 @@
-package main.java.br.com.baronheid.entity;
+package main.java.br.com.baronheid.model.entity;
 
 import lombok.Data;
 

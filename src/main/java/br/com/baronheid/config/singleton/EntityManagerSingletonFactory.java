@@ -1,4 +1,4 @@
-package main.java.br.com.baronheid.singleton;
+package main.java.br.com.baronheid.config.singleton;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
