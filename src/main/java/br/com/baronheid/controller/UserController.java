@@ -1,6 +1,7 @@
 package main.java.br.com.baronheid.controller;
 
 
+import main.java.br.com.baronheid.model.entity.wrapper.Users;
 import main.java.br.com.baronheid.model.services.UserService;
 
 import javax.ws.rs.GET;
@@ -9,7 +10,7 @@ import javax.ws.rs.Produces;
 
 @Path("/control")
 public class UserController {
-    
+
     private final UserService userService = new UserService();
 
     @GET
@@ -17,5 +18,11 @@ public class UserController {
     @Produces("text/plain;charset=utf-8")
     public String helloWorld(){
         return userService.helloWorldRequest();
+    }
+
+    @GET
+    @Path("/users")
+    public Users getAllUsers(){
+        return userService.getAll();
     }
 }

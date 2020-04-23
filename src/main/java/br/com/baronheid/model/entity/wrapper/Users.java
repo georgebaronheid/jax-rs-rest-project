@@ -7,6 +7,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to provide xml root element for users:
+ * <users></users> and users:[]
+ */
 @XmlRootElement
 public class Users {
 
@@ -22,7 +26,7 @@ public class Users {
     public List<User> getUsers() {
         return users;
     }
-    
+
     public void setUsers(List<User> users) {
         this.users = users;
     }
