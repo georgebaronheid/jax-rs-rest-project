@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 
 @Path("/control")
 public class UserController {
-
+    
     private final UserService userService = new UserService();
 
     @GET
