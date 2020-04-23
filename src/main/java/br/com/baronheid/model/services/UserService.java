@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 public class UserService {
 
     public String helloWorldRequest(){
-        return "Hello World";
+        return "Hello World - Olá - Acentuação";
     }
 
 }

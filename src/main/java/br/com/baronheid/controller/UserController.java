@@ -14,7 +14,7 @@ public class UserController {
 
     @GET
     @Path("/hello")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=utf-8")
     public String helloWorld(){
         return userService.helloWorldRequest();
     }
