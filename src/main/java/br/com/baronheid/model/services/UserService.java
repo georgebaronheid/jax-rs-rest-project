@@ -3,25 +3,21 @@ package main.java.br.com.baronheid.model.services;
 import main.java.br.com.baronheid.model.EntityNotFoundException;
 import main.java.br.com.baronheid.model.dao.UserDAOImpl;
 import main.java.br.com.baronheid.model.dao.interfaces.UserDAO;
-import main.java.br.com.baronheid.model.entity.User;
 import main.java.br.com.baronheid.model.entity.wrapper.Users;
 
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
-import java.util.List;
 
 //Path that the service will listen to
 public class UserService {
 
-    private UserDAO userDAO = new UserDAOImpl();
+    private final UserDAO userDAO = new UserDAOImpl();
 
     public String helloWorldRequest() {
         return "Hello World - Olá - Acentuação";
     }
 
-    public Users getAll() {
-
+    public Users getAllUsers() {
         Users users = null;
         try {
             users = new Users(userDAO.listObjects());

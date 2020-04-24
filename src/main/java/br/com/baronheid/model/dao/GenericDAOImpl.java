@@ -45,6 +45,6 @@ public class GenericDAOImpl<T,K> implements GenericDAO<T,K> {
 
     @Override
     public List<T> listObjects() {
-        return entityManager.createQuery("from" + clazz.getName()).getResultList();
+        return entityManager.createQuery("from " + clazz.getName()).getResultList();
     }
 }

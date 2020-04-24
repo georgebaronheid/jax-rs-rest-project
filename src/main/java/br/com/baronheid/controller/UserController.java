@@ -1,10 +1,12 @@
 package main.java.br.com.baronheid.controller;
 
 
+import main.java.br.com.baronheid.model.entity.User;
 import main.java.br.com.baronheid.model.entity.wrapper.Users;
 import main.java.br.com.baronheid.model.services.UserService;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -23,6 +25,12 @@ public class UserController {
     @GET
     @Path("/users")
     public Users getAllUsers(){
-        return userService.getAll();
+        return userService.getAllUsers();
+    }
+
+    @POST
+    @Path("/users")
+    public void saveUser() {
+        userService.createUser();
     }
 }
