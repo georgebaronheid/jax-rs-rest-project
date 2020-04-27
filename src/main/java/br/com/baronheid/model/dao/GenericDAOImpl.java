@@ -25,7 +25,6 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @SuppressWarnings(value = "unchecked")
     @Override
     public T register(Object entity) {
-        checkEntityManager();
         entityManager.persist(entity);
         commit();
         return (T) entity;
@@ -34,7 +33,6 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @SuppressWarnings(value = "unchecked")
     @Override
     public void update(Object entity) {
-        checkEntityManager();
         T mergedObject = (T) entityManager.merge(entity);
         commit();
 //        return mergedObject;
@@ -42,7 +40,6 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
 
     @Override
     public T search(K id) {
-        checkEntityManager();
         T objectFound = entityManager.find(clazz, id);
         entityManager.close();
         return objectFound;
@@ -50,7 +47,6 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
 
     @Override
     public void delete(K id) throws Exception {
-        checkEntityManager();
         Object objectToDelete = search(id);
         if (objectToDelete != null) {
             entityManager.remove(objectToDelete);
@@ -61,7 +57,6 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @SuppressWarnings(value = "unchecked")
     @Override
     public List<T> listObjects() {
-        checkEntityManager();
         List<T> objects = entityManager.createQuery("from " + clazz.getName()).getResultList();
         entityManager.close();
         return objects;
@@ -71,10 +66,5 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
         entityManager.getTransaction().begin();
         entityManager.getTransaction().commit();
         entityManager.close();
-    }
-
-
-    private void checkEntityManager() {
-        if (!entityManager.isOpen()) entityManager = EntityManagerSingletonFactory.getInstance().createEntityManager();
     }
 }
