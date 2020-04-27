@@ -2,9 +2,12 @@ package main.java.br.com.baronheid.model.dao;
 
 import main.java.br.com.baronheid.config.singleton.EntityManagerSingletonFactory;
 import main.java.br.com.baronheid.model.dao.interfaces.GenericDAO;
+import main.java.br.com.baronheid.model.exceptions.DatabaseException;
+import main.java.br.com.baronheid.model.exceptions.EntityNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.ParameterizedType;
@@ -15,7 +18,7 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @PersistenceContext
     protected EntityManager entityManager;
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     @SuppressWarnings(value = "unchecked")
     public GenericDAOImpl() {
@@ -26,40 +29,68 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
 
     @SuppressWarnings(value = "unchecked")
     @Override
-    public T register(Object entity) {
-        entityManager.persist(entity);
+    public T register(final Object entity) {
+        try {
+            entityManager.persist(entity);
+        } catch (DatabaseException databaseException) {
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        } catch (Exception exception) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
         commit();
         return (T) entity;
     }
 
     @SuppressWarnings(value = "unchecked")
     @Override
-    public void update(Object entity) {
+    public void update(final Object entity) {
         T mergedObject = (T) entityManager.merge(entity);
         commit();
 //        return mergedObject;
     }
 
     @Override
-    public T search(K id) {
-        T objectFound = entityManager.find(clazz, id);
+    public T search(final K id) {
+        T objectFound = null;
+        try{
+            objectFound = entityManager.find(clazz, id);
+        } catch (EntityNotFoundException e) {
+            e.badRequest();
+        } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
         entityManager.close();
         return objectFound;
     }
 
     @Override
-    public void delete(K id) throws Exception {
+    public void delete(final K id) {
         Object objectToDelete = search(id);
         if (objectToDelete != null) {
-            entityManager.remove(objectToDelete);
+            try {
+                entityManager.remove(objectToDelete);
+            } catch (EntityNotFoundException e) {
+                e.badRequest();
+            } catch (Exception e) {
+                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            }
             commit();
-        } else throw new Exception("Unable to find given object");
+        } else throw new EntityNotFoundException("Unable to find given object");
     }
 
     @SuppressWarnings(value = "unchecked")
     @Override
     public List<T> listObjects() {
-        List<T> objects = entityManager.createQuery("from " + clazz.getName()).getResultList();
+        List<T> objects = null;
+        try {
+            objects = entityManager.createQuery("from " + clazz.getName()).getResultList();
+        } catch (EntityNotFoundException entityNotFoundException) {
+            entityNotFoundException.badRequest();
+        } catch (InternalServerErrorException e) {
+            throw new WebApplicationException(500);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         entityManager.close();
         return objects;
     }
