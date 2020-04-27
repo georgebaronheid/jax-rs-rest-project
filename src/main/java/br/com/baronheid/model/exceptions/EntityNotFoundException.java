@@ -1,4 +1,4 @@
-package main.java.br.com.baronheid.model;
+package main.java.br.com.baronheid.model.exceptions;
 
 import javax.ws.rs.WebApplicationException;
 

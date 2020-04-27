@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface GenericDAO<T,K> {
 
-    void register(T entity);
+    T register(T entity);
 
     void update(T entity);
 

@@ -1,17 +1,25 @@
 package main.java.br.com.baronheid.model.services;
 
-import main.java.br.com.baronheid.model.EntityNotFoundException;
 import main.java.br.com.baronheid.model.dao.UserDAOImpl;
 import main.java.br.com.baronheid.model.dao.interfaces.UserDAO;
+import main.java.br.com.baronheid.model.entity.User;
 import main.java.br.com.baronheid.model.entity.wrapper.Users;
+import main.java.br.com.baronheid.model.exceptions.DatabaseException;
+import main.java.br.com.baronheid.model.exceptions.EntityNotFoundException;
 
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 
-//Path that the service will listen to
 public class UserService {
 
-    private final UserDAO userDAO = new UserDAOImpl();
+    private final UserDAO userDAO;
+
+    public UserService() {
+        this.userDAO = new UserDAOImpl();
+    }
 
     public String helloWorldRequest() {
         return "Hello World - Olá - Acentuação";
@@ -29,5 +37,42 @@ public class UserService {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public User searchUserById(Integer id) {
+        User search = null;
+        try {
+            search = userDAO.search(id);
+        } catch (EntityNotFoundException e) {
+            e.badRequest();
+        } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        return search;
+    }
+
+    public void deleteUserById(Integer id) {
+        try {
+            userDAO.delete(id);
+        } catch (EntityNotFoundException e) {
+            e.badRequest();
+        } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public Response createUser(User user) {
+        try {
+            User userToCreate = userDAO.register(user);
+            URI uri = UriBuilder.fromPath("/users/{id}")
+                    .build(userToCreate.getUserId());
+            return Response.created(uri).entity(userToCreate).build();
+        } catch (DatabaseException databaseException) {
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        } catch (Exception exception) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
