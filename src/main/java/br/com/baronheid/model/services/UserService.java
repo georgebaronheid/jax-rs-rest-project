@@ -61,7 +61,6 @@ public class UserService {
         }
     }
 
-
     public Response createUser(User user) {
         try {
             User userToCreate = userDAO.register(user);

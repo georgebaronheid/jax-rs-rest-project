@@ -5,6 +5,8 @@ import main.java.br.com.baronheid.model.dao.interfaces.GenericDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
@@ -63,8 +65,15 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     }
 
     public void commit() {
-        entityManager.getTransaction().begin();
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        } finally {
+            if (entityManager != null) entityManager.close();
+        }
     }
 }
