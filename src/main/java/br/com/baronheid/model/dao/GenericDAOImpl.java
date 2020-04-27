@@ -75,8 +75,6 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
 
 
     private void checkEntityManager() {
-        if (!entityManager.isOpen()){
-            entityManager = EntityManagerSingletonFactory.getInstance().createEntityManager();
-        }
+        if (!entityManager.isOpen()) entityManager = EntityManagerSingletonFactory.getInstance().createEntityManager();
     }
 }
