@@ -31,6 +31,7 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @Override
     public T register(final Object entity) {
         try {
+            entityManager.getTransaction().begin();
             entityManager.persist(entity);
         } catch (DatabaseException databaseException) {
             throw new WebApplicationException(Response.Status.CONFLICT);
@@ -44,6 +45,7 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @SuppressWarnings(value = "unchecked")
     @Override
     public void update(final Object entity) {
+        entityManager.getTransaction().begin();
         T mergedObject = (T) entityManager.merge(entity);
         commit();
 //        return mergedObject;
@@ -52,7 +54,7 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
     @Override
     public T search(final K id) {
         T objectFound = null;
-        try{
+        try {
             objectFound = entityManager.find(clazz, id);
         } catch (EntityNotFoundException e) {
             e.badRequest();
@@ -68,6 +70,7 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
         Object objectToDelete = search(id);
         if (objectToDelete != null) {
             try {
+                entityManager.getTransaction().begin();
                 entityManager.remove(objectToDelete);
             } catch (EntityNotFoundException e) {
                 e.badRequest();
@@ -87,7 +90,7 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
         } catch (EntityNotFoundException entityNotFoundException) {
             entityNotFoundException.badRequest();
         } catch (InternalServerErrorException e) {
-            throw new WebApplicationException(500);
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,14 +100,15 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
 
     public void commit() {
         try {
-            entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
             entityManager.close();
         } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) entityManager
+                    .getTransaction().rollback();
             e.printStackTrace();
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
-            if (entityManager != null) entityManager.close();
+            if (entityManager != null && entityManager.isOpen()) entityManager.close();
         }
     }
 }
