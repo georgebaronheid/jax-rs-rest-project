@@ -6,7 +6,7 @@ public interface GenericDAO<T,K> {
 
     T register(T entity);
 
-    void update(T entity);
+    T update(T entity);
 
     T search(K id);
 

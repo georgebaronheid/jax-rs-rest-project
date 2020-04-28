@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "TBL_JAX_USER")
+@Table(name = "TBL_JAX_USER", schema = "RM83162")
 @SequenceGenerator(name = "sqUser", sequenceName = "SEQ_USER", allocationSize = 1)
 //Lombok to avoid boilerplate
 @Data

@@ -4,6 +4,7 @@ import main.java.br.com.baronheid.model.dao.UserDAOImpl;
 import main.java.br.com.baronheid.model.dao.interfaces.UserDAO;
 import main.java.br.com.baronheid.model.entity.User;
 import main.java.br.com.baronheid.model.entity.wrapper.Users;
+import main.java.br.com.baronheid.model.exceptions.DatabaseException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -46,5 +47,12 @@ public class UserService {
         URI uri = UriBuilder.fromPath("/users/{id}")
                 .build(userToCreate.getUserId());
         return Response.created(uri).entity(userToCreate).build();
+    }
+
+    public User updateUser(Integer id, User receivedUser) {
+        if (searchUserById(id) != null) {
+            receivedUser.setUserId(id);
+            return userDAO.update(receivedUser);
+        } else throw new DatabaseException("Entity to update not found");
     }
 }

@@ -44,11 +44,16 @@ public class GenericDAOImpl<T, K> implements GenericDAO<T, K> {
 
     @SuppressWarnings(value = "unchecked")
     @Override
-    public void update(final Object entity) {
-        entityManager.getTransaction().begin();
-        T mergedObject = (T) entityManager.merge(entity);
-        commit();
-//        return mergedObject;
+    public T update(final Object entity) {
+        T mergedObject;
+        try {
+            entityManager.getTransaction().begin();
+            mergedObject = (T) entityManager.merge(entity);
+            commit();
+        } catch (WebApplicationException webApplicationException) {
+            throw new DatabaseException("Unable to update");
+        }
+        return mergedObject;
     }
 
     @Override
